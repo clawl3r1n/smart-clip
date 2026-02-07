@@ -1,12 +1,12 @@
 # Smart Clip 📎
 
-A smart clipboard manager that automatically categorizes your copied text using regex patterns and stores it in a searchable local database.
+A context-aware clipboard manager that captures **where** and **when** you copied something.
 
 ## Features
-- **Auto-Categorization**: Detects URLs, Emails, Phone Numbers, Code Snippets, Hex Colors, and more.
-- **Searchable History**: Retrieve past clips by type, content, or date.
-- **CLI Interface**: Simple command-line tools to view and manage your clipboard history.
-- **Background Daemon**: Runs silently in the background capturing everything you copy.
+- **Context Capture**: Records the application name, window title, and timestamp.
+- **Smart Formatting**: Retrieve clips formatted as citations or Markdown blocks.
+- **Auto-Categorization**: Detects URLs, Emails, Phone Numbers, Code Snippets, etc.
+- **Searchable History**: Retrieve past clips by type, content, or source app.
 
 ## Installation
 
@@ -18,36 +18,31 @@ pip install -r requirements.txt
 
 ## Usage
 
-### 1. Start the Background Listener
-This will monitor your clipboard for changes.
+### 1. Watch Mode (Enhanced)
+Starts the listener. It now attempts to detect the active window title (works best on Windows/Linux with `pygetwindow`).
 ```bash
 python main.py watch
 ```
 
-### 2. View History
-Show all recent clips:
+### 2. Formatted Paste
+Get the last clip formatted with its context:
+```bash
+python main.py paste --format markdown
+```
+**Output:**
+```markdown
+> "The text you copied..."
+— Copied from [Chrome: Stack Overflow] at 2023-10-27 14:00
+```
+
+### 3. List History
+Show source applications:
 ```bash
 python main.py list
 ```
 
-Filter by category (e.g., only show links):
-```bash
-python main.py list --category Link
-```
-
-Search content:
-```bash
-python main.py search "project"
-```
-
-## Categories
-The tool currently recognizes:
-- `Link` (http/https URLs)
-- `Email`
-- `Color` (Hex codes like #FF0000)
-- `Phone` (Simple phone number patterns)
-- `Code` (Blocks with typical programming syntax like `{ } ;`)
-- `Text` (Everything else)
-
-## Data Storage
-Clips are stored locally in `clipboard.db` (SQLite).
+## Formats Supported
+- `raw`: Just the text (default).
+- `markdown`: Blockquote with source metadata.
+- `json`: Full metadata object.
+- `citation`: "Text" (Source, Date).
